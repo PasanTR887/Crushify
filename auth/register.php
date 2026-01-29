@@ -38,6 +38,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
 }
+
+$newUserId = $conn->insert_id;
+
+//notify existing users
+$notify = $conn->query("
+  INSERT INTO notifications (user_id, type, content)
+  SELECT id, 'new_user', 'A new user just joined Crushify 💕'
+  FROM users
+  WHERE id != $newUserId
+  ");
 ?>
 <!doctype html>
 <html>

@@ -1,5 +1,18 @@
 <?php 
 if (session_status() === PHP_SESSION_NONE) session_start();
+require_once __DIR__ . "/../config/db.php"; 
+
+
+//Show noti count on navbar
+$countQ = $conn->prepare("
+  SELECT COUNT(*) AS total
+  FROM notifications
+  WHERE user_id=? AND is_read=0
+");
+$countQ->bind_param("i", $_SESSION['user_id']);
+$countQ->execute();
+$notifCount = $countQ->get_result()->fetch_assoc()['total'];
+
 ?>
 <nav class="navbar navbar-expand-lg bg-white border-bottom">
   <div class="container">
@@ -14,7 +27,13 @@ if (session_status() === PHP_SESSION_NONE) session_start();
         <li class="nav-item"><a class="nav-link" href="/Crushify/dashboard/index.php">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="/Crushify/dashboard/find_match.php">Find Match</a></li>
         <li class="nav-item"><a class="nav-link" href="/Crushify/dashboard/inbox.php">Inbox</a></li>
-        <li class="nav-item"><a class="nav-link" href="/Crushify/dashboard/notifications.php">Notifications</a></li>
+        <li class="nav-item"><a class="nav-link" href="/Crushify/dashboard/notifications.php">
+          Notifications
+          <?php if($notifCount > 0) : ?>
+            <span class="badge bg-danger"><?= $notifCount ?> </span>
+          <?php endif; ?>
+          </a>
+        </li>
       </ul>
 
       <div class="dropdown">
