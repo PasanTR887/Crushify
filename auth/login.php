@@ -26,38 +26,58 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 ?>
 <!doctype html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Crushify - Login</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/Crushify/assets/css/style.css">
 </head>
-<body class="bg-light">
-<div class="container py-5" style="max-width:520px;">
-  <div class="card shadow-sm">
-    <div class="card-body p-4">
-      <h3 class="mb-3">Welcome Back</h3>
+<body>
 
-      <?php if ($error): ?>
+<div class="auth-wrap">
+
+  <!-- Left branding panel -->
+  <div class="auth-left">
+    <div class="brand-badge"><span aria-hidden="true">&hearts;</span> <strong>Crushify</strong></div>
+    <div class="brand">Crushify</div>
+    <div class="slogan">Your Match, Your Story - a safe space to meet, chat, and discover genuine connections.</div>
+  </div>
+
+  <!-- Right form panel -->
+  <div class="auth-right">
+    <div class="auth-card">
+
+      <div class="auth-title">Welcome Back</div>
+      <div class="auth-sub">Sign in to continue your dating journey.</div>
+
+      <?php if (!empty($error)): ?>
         <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
       <?php endif; ?>
 
       <form method="post">
         <div class="mb-3">
-          <label class="form-label">Email</label>
-          <input class="form-control" type="email" name="email" required>
+          <label class="form-label" for="loginEmail">Email</label>
+          <input id="loginEmail" class="form-control" type="email" name="email" autocomplete="email" placeholder="you@example.com" required>
         </div>
+
         <div class="mb-3">
-          <label class="form-label">Password</label>
-          <input class="form-control" type="password" name="password" required>
+          <label class="form-label" for="loginPassword">Password</label>
+          <input id="loginPassword" class="form-control" type="password" name="password" autocomplete="current-password" placeholder="Enter your password" required>
         </div>
-        <button class="btn btn-primary w-100">Sign in</button>
+
+        <button class="btn btn-crushify w-100" type="submit">Sign In</button>
       </form>
 
-      <div class="mt-3 text-center">
-        New here? <a href="register.php">Create account</a>
+      <div class="auth-footer text-center">
+        New here? <a class="auth-link" href="register.php">Create account</a>
       </div>
     </div>
   </div>
+
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

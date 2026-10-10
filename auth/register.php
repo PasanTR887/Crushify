@@ -31,6 +31,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $stmt2->bind_param("sss", $full_name,$email,$hash);
 
             if ($stmt2->execute()) {
+                $newUserId = $conn->insert_id;
+                $conn->query("
+                  INSERT INTO notifications (user_id, type, content)
+                  SELECT id, 'new_user', 'A new user just joined Crushify'
+                  FROM users
+                  WHERE id != $newUserId
+                ");
                 $success = "Account created! Please login." ;
             }else {
                 $error = "Someting went wrong. Try again.";
@@ -39,60 +46,73 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 
-$newUserId = $conn->insert_id;
-
-//notify existing users
-$notify = $conn->query("
-  INSERT INTO notifications (user_id, type, content)
-  SELECT id, 'new_user', 'A new user just joined Crushify 💕'
-  FROM users
-  WHERE id != $newUserId
-  ");
 ?>
 <!doctype html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Crushify - Register</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/Crushify/assets/css/style.css">
 </head>
-<body class="bg-light">
-<div class="container py-5" style="max-width:520px;">
-  <div class="card shadow-sm">
-    <div class="card-body p-4">
-      <h3 class="mb-3">Create Account</h3>
+<body>
 
-      <?php if ($error): ?>
+<div class="auth-wrap">
+
+  <!-- Left branding panel -->
+  <div class="auth-left">
+    <div class="brand-badge"><span aria-hidden="true">&hearts;</span> <strong>Crushify</strong></div>
+    <div class="brand">Crushify</div>
+    <div class="slogan">Join today - meet meaningful matches effortlessly, with a romantic and modern experience.</div>
+  </div>
+
+  <!-- Right form panel -->
+  <div class="auth-right">
+    <div class="auth-card">
+
+      <div class="auth-title">Create Account</div>
+      <div class="auth-sub">Let's start your story.</div>
+
+      <?php if (!empty($error)): ?>
         <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
       <?php endif; ?>
-      <?php if ($success): ?>
+      <?php if (!empty($success)): ?>
         <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
       <?php endif; ?>
 
       <form method="post">
         <div class="mb-3">
-          <label class="form-label">Full Name</label>
-          <input class="form-control" name="full_name" required>
+          <label class="form-label" for="registerName">Full Name</label>
+          <input id="registerName" class="form-control" name="full_name" maxlength="120" autocomplete="name" placeholder="Your name" required>
         </div>
+
         <div class="mb-3">
-          <label class="form-label">Email</label>
-          <input class="form-control" type="email" name="email" required>
+          <label class="form-label" for="registerEmail">Email</label>
+          <input id="registerEmail" class="form-control" type="email" name="email" autocomplete="email" placeholder="you@example.com" required>
         </div>
+
         <div class="mb-3">
-          <label class="form-label">Password</label>
-          <input class="form-control" type="password" name="password" required>
+          <label class="form-label" for="registerPassword">Password</label>
+          <input id="registerPassword" class="form-control" type="password" name="password" minlength="6" autocomplete="new-password" placeholder="Create a password" required>
         </div>
+
         <div class="mb-3">
-          <label class="form-label">Confirm Password</label>
-          <input class="form-control" type="password" name="confirm_password" required>
+          <label class="form-label" for="confirmPassword">Confirm Password</label>
+          <input id="confirmPassword" class="form-control" type="password" name="confirm_password" minlength="6" autocomplete="new-password" placeholder="Repeat password" required>
         </div>
-        <button class="btn btn-primary w-100">Sign up</button>
+
+        <button class="btn btn-crushify w-100" type="submit">Create Account</button>
       </form>
 
-      <div class="mt-3 text-center">
-        Already have an account? <a href="login.php">Login</a>
+      <div class="auth-footer text-center">
+        Already have an account? <a class="auth-link" href="login.php">Login</a>
       </div>
     </div>
   </div>
+
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
